@@ -1,10 +1,12 @@
 # main.py
-# A FastAPI server that receives receipt images and extracts text using Google Cloud Vision.
+# A FastAPI server that receives receipt images, extracts text via OCR,
+# and classifies items as food or non-food.
 #
 # WHAT THIS DOES:
-# 1. Receives an uploaded image from the phone app
-# 2. Sends it to Google Cloud Vision for OCR (text reading)
-# 3. Returns the raw text back
+# 1. Receives an uploaded receipt image
+# 2. Sends it to Google Cloud Vision for OCR
+# 3. Splits the text into lines and classifies each as food / non-food / unknown
+# 4. Returns only food and unknown items (non-food is filtered out)
 #
 # HOW TO RUN:
 #   python main.py
@@ -18,6 +20,8 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
+from classifier import classify_item, should_skip_line
+
 # Load environment variables from .env file
 load_dotenv()
 
@@ -27,12 +31,11 @@ VISION_API_URL = f"https://vision.googleapis.com/v1/images:annotate?key={GOOGLE_
 # --- Create the app ---
 app = FastAPI(
     title="Recipe App - Receipt Scanner API",
-    description="Processes receipt images and extracts text",
-    version="0.1.0",
+    description="Processes receipt images and extracts food ingredients",
+    version="0.2.0",
 )
 
 # CORS middleware — allows the phone app to talk to this server.
-# Without this, requests from a different device/origin get blocked.
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -45,11 +48,6 @@ app.add_middleware(
 def extract_text_from_image(image_bytes: bytes) -> str:
     """
     Sends an image to Google Cloud Vision API and returns all detected text.
-
-    How it works:
-    1. Convert the image to base64 (a text format Google's API accepts)
-    2. Send it to the Vision API with a TEXT_DETECTION request
-    3. Pull the full text out of Google's response
     """
 
     base64_image = base64.b64encode(image_bytes).decode("utf-8")
@@ -81,6 +79,46 @@ def extract_text_from_image(image_bytes: bytes) -> str:
         return ""
 
 
+def parse_receipt_text(ocr_text: str) -> list[dict]:
+    """
+    Takes raw OCR text and returns a list of classified items.
+
+    Steps:
+    1. Split text into lines
+    2. Skip non-product lines (dates, totals, store info)
+    3. Classify each remaining line as food / non_food / unknown
+    4. Return food and unknown items (user will review unknowns)
+    """
+
+    lines = ocr_text.strip().split("\n")
+    results = []
+    seen = set()  # Track duplicates
+
+    for line in lines:
+        line = line.strip()
+
+        if not line or should_skip_line(line):
+            continue
+
+        category = classify_item(line)
+
+        # Skip non-food items
+        if category == "non_food":
+            continue
+
+        # Skip duplicates
+        if line.lower() in seen:
+            continue
+        seen.add(line.lower())
+
+        results.append({
+            "raw_text": line,
+            "category": category,
+        })
+
+    return results
+
+
 # --- ENDPOINTS ---
 
 @app.get("/health")
@@ -92,9 +130,8 @@ async def health_check():
 @app.post("/api/receipt/process")
 async def process_receipt(image_file: UploadFile = File(...)):
     """
-    Receives a receipt image, runs OCR, and returns the extracted text.
-
-    For now, this returns raw text only.
+    Receives a receipt image, runs OCR, classifies items as food/non-food,
+    and returns the detected food items.
     """
 
     # Read the uploaded image
@@ -113,12 +150,17 @@ async def process_receipt(image_file: UploadFile = File(...)):
         return {
             "success": False,
             "message": "Could not read text from the image. Try a clearer photo.",
+            "ingredients": [],
             "raw_text": "",
         }
 
+    # Classify items
+    ingredients = parse_receipt_text(ocr_text)
+
     return {
         "success": True,
-        "message": "Text extracted successfully",
+        "message": f"Found {len(ingredients)} item(s)",
+        "ingredients": ingredients,
         "raw_text": ocr_text,
     }
 
