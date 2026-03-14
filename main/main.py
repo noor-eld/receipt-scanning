@@ -1,16 +1,11 @@
 # main.py
-# A FastAPI server that receives receipt images, extracts text via OCR,
-# and classifies items as food or non-food.
-#
-# WHAT THIS DOES:
-# 1. Receives an uploaded receipt image
-# 2. Sends it to Google Cloud Vision for OCR
-# 3. Splits the text into lines and classifies each as food / non-food / unknown
-# 4. Returns only food and unknown items (non-food is filtered out)
+# FastAPI server: receives receipt images, runs OCR, and classifies items
+# using a trained ML model (TF-IDF + Logistic Regression).
 #
 # HOW TO RUN:
-#   python main.py
-#   Then visit http://localhost:8000/docs to test it
+#   1. First train the model: python train_model.py
+#   2. Then start the server: python main.py
+#   3. Test at http://localhost:8000/docs
 
 import base64
 import os
@@ -22,20 +17,17 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from classifier import classify_item, should_skip_line
 
-# Load environment variables from .env file
 load_dotenv()
 
 GOOGLE_CLOUD_VISION_KEY = os.getenv("GOOGLE_CLOUD_VISION_KEY")
 VISION_API_URL = f"https://vision.googleapis.com/v1/images:annotate?key={GOOGLE_CLOUD_VISION_KEY}"
 
-# --- Create the app ---
 app = FastAPI(
     title="Recipe App - Receipt Scanner API",
-    description="Processes receipt images and extracts food ingredients",
+    description="Processes receipt images and extracts food ingredients using ML",
     version="0.2.0",
 )
 
-# CORS middleware — allows the phone app to talk to this server.
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -46,9 +38,7 @@ app.add_middleware(
 
 
 def extract_text_from_image(image_bytes: bytes) -> str:
-    """
-    Sends an image to Google Cloud Vision API and returns all detected text.
-    """
+    """Sends an image to Google Cloud Vision API and returns all detected text."""
 
     base64_image = base64.b64encode(image_bytes).decode("utf-8")
 
@@ -81,18 +71,18 @@ def extract_text_from_image(image_bytes: bytes) -> str:
 
 def parse_receipt_text(ocr_text: str) -> list[dict]:
     """
-    Takes raw OCR text and returns a list of classified items.
+    Processes raw OCR text into classified items using the ML model.
 
     Steps:
-    1. Split text into lines
-    2. Skip non-product lines (dates, totals, store info)
-    3. Classify each remaining line as food / non_food / unknown
-    4. Return food and unknown items (user will review unknowns)
+    1. Split into lines
+    2. Skip receipt metadata (dates, totals, store info)
+    3. Classify each line with the ML model
+    4. Return food items and low-confidence items for user review
     """
 
     lines = ocr_text.strip().split("\n")
     results = []
-    seen = set()  # Track duplicates
+    seen = set()
 
     for line in lines:
         line = line.strip()
@@ -100,20 +90,25 @@ def parse_receipt_text(ocr_text: str) -> list[dict]:
         if not line or should_skip_line(line):
             continue
 
-        category = classify_item(line)
+        # Use the ML model to classify
+        prediction = classify_item(line)
 
-        # Skip non-food items
-        if category == "non_food":
+        label = prediction["label"]
+        confidence = prediction["confidence"]
+
+        # Skip items the model is confident are non-food
+        if label == "non_food" and confidence > 0.7:
             continue
 
-        # Skip duplicates
+        # Avoid duplicates
         if line.lower() in seen:
             continue
         seen.add(line.lower())
 
         results.append({
             "raw_text": line,
-            "category": category,
+            "category": label,
+            "confidence": round(confidence, 2),
         })
 
     return results
@@ -123,18 +118,16 @@ def parse_receipt_text(ocr_text: str) -> list[dict]:
 
 @app.get("/health")
 async def health_check():
-    """Simple check to verify the server is running."""
     return {"status": "ok"}
 
 
 @app.post("/api/receipt/process")
 async def process_receipt(image_file: UploadFile = File(...)):
     """
-    Receives a receipt image, runs OCR, classifies items as food/non-food,
-    and returns the detected food items.
+    Receives a receipt image, runs OCR, classifies items with ML model,
+    and returns detected food items with confidence scores.
     """
 
-    # Read the uploaded image
     try:
         image_bytes = await image_file.read()
     except Exception as e:
@@ -143,7 +136,6 @@ async def process_receipt(image_file: UploadFile = File(...)):
     if len(image_bytes) == 0:
         raise HTTPException(status_code=400, detail="Empty image file")
 
-    # Run OCR
     ocr_text = extract_text_from_image(image_bytes)
 
     if not ocr_text:
@@ -154,7 +146,6 @@ async def process_receipt(image_file: UploadFile = File(...)):
             "raw_text": "",
         }
 
-    # Classify items
     ingredients = parse_receipt_text(ocr_text)
 
     return {

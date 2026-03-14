@@ -1,0 +1,408 @@
+product_name,label
+Whole Milk,food
+Semi Skimmed Milk,food
+Skimmed Milk 1L,food
+Banana,food
+Banana Loose,food
+Banana Cavendish,food
+Organic Banana,food
+Apple Royal Gala,food
+Apple Granny Smith,food
+Red Apple,food
+Orange,food
+Lemon,food
+Lime,food
+Grapes Green,food
+Grapes Red Seedless,food
+Strawberries 1kg,food
+Blueberries,food
+Raspberries,food
+Mango,food
+Pineapple,food
+Watermelon,food
+Avocado,food
+Pear,food
+Peach,food
+Kiwi Fruit,food
+Cherry Tomatoes,food
+Tomatoes Grape,food
+Tomatoes On The Vine,food
+Potato,food
+Potatoes Brushed,food
+Baby Potatoes,food
+Sweet Potato,food
+Onion Brown,food
+Onion Red,food
+White Onion,food
+Green Onions,food
+Spring Onion,food
+Garlic,food
+Garlic Bulb,food
+Carrot,food
+Carrots Baby,food
+Broccoli,food
+Broc Crowns,food
+Broccoli Florets,food
+Spinach Baby,food
+Spinach Leaves,food
+Lettuce Iceberg,food
+Romaine Lettuce,food
+Cucumber,food
+Celery,food
+Corn On Cob,food
+Sweet Corn,food
+Mushroom White,food
+Mushrooms Sliced,food
+Zucchini Green,food
+Courgette,food
+Cabbage,food
+Red Cabbage,food
+Cauliflower,food
+Green Beans,food
+Runner Beans,food
+Peas Snow,food
+Garden Peas,food
+Brussel Sprouts,food
+Asparagus,food
+Kale,food
+Leek,food
+Pepper Red,food
+Pepper Green,food
+Bell Pepper Yellow,food
+Chili Pepper,food
+Jalapeno,food
+Ginger Root,food
+Fresh Herbs Basil,food
+Fresh Coriander,food
+Fresh Parsley,food
+Fresh Mint,food
+Chicken Breast,food
+Chicken Breast Fillet,food
+Bnls Brst,food
+Chicken Thigh,food
+Chicken Drumstick,food
+Chicken Wing,food
+Whole Chicken,food
+Chkn Breast,food
+GV Chnk Chkn,food
+Beef Mince,food
+Beef Steak,food
+Ground Beef,food
+Beef Sirloin,food
+NY Strip Thn,food
+Bnls Brst MD,food
+Pork Chop,food
+Pork Loin,food
+Pork Mince,food
+Bacon,food
+Bacon Smoked,food
+Back Bacon,food
+Turkey Breast,food
+Turkey Mince,food
+Lamb Leg,food
+Lamb Chop,food
+Lamb Mince,food
+Salmon Fillet,food
+Smoked Salmon,food
+Tuna Steak,food
+Cod Fillet,food
+Haddock,food
+Prawns,food
+Shrimp,food
+Fish Fingers,food
+Sausage Pork,food
+Sausage Beef,food
+Cumberland Sausage,food
+Ham Sliced,food
+Salami,food
+Pepperoni,food
+Cheddar Cheese,food
+Mozzarella,food
+Parmesan,food
+GV Parm 16oz,food
+Cream Cheese,food
+Feta Cheese,food
+Brie,food
+Gouda,food
+Swiss Cheese,food
+Butter Unsalted,food
+Butter Salted,food
+GV Pnt Buttr,food
+Peanut Butter,food
+Peanut Butter Crunchy,food
+Eggs Free Range,food
+Eggs 12 Pack,food
+Free Range Eggs,food
+Egg Best Org,food
+Eggs,food
+Yogurt Natural,food
+Greek Yoghurt,food
+Yogurt Strawberry,food
+Double Cream,food
+Single Cream,food
+Sour Cream,food
+Bread White,food
+Bread Wholemeal,food
+Bread Sourdough,food
+Sliced Bread,food
+Bagel,food
+Croissant,food
+Bread Roll,food
+Pitta Bread,food
+Tortilla Wrap,food
+Naan Bread,food
+Rice White,food
+Rice Basmati,food
+Rice Brown,food
+Jasmine Rice,food
+Mahatma Jasm,food
+Pasta Penne,food
+Pasta Fusilli,food
+Fusilli HWG,food
+Spaghetti,food
+Noodles Egg,food
+Rice Noodles,food
+Flour Plain,food
+Flour Self Raising,food
+Oats Porridge,food
+Cereal Cornflakes,food
+Granola,food
+Muesli,food
+Sugar White,food
+Sugar Brown,food
+Caster Sugar,food
+Icing Sugar,food
+Salt Table,food
+Sea Salt,food
+WM Sea Salt,food
+Olive Oil,food
+Vegetable Oil,food
+Sunflower Oil,food
+Coconut Oil,food
+Sesame Oil,food
+Acocado Oil,food
+Avocado Oil,food
+Vinegar White,food
+Balsamic Vinegar,food
+Apple Cider Vinegar,food
+Soy Sauce,food
+Oyster Sauce,food
+Hoisin Sauce,food
+Sriracha Sce,food
+Sriracha Sauce,food
+Tomato Ketchup,food
+Mustard,food
+Mayonnaise,food
+BBQ Sauce,food
+Hot Sauce,food
+Worcestershire Sauce,food
+Honey,food
+Maple Syrup,food
+Jam Strawberry,food
+Marmalade,food
+Peanut Butter Smooth,food
+Nutella,food
+Black Pepper,food
+Gr Pepercrn,food
+Ground Peppercorn,food
+Cumin Ground,food
+Paprika,food
+Cinnamon Ground,food
+Turmeric,food
+Chili Powder,food
+Oregano Dried,food
+Mixed Herbs,food
+Curry Powder,food
+Stock Cube Chicken,food
+Stock Cube Beef,food
+Tomato Puree,food
+Chopped Tomatoes,food
+Coconut Milk,food
+Baked Beans,food
+Kidney Beans,food
+Chickpeas,food
+Lentils,food
+Canned Tuna,food
+Canned Sweetcorn,food
+Soup Tomato,food
+Soup Chicken,food
+Chocolate Milk,food
+Dark Chocolate,food
+Milk Chocolate,food
+Chocolate Bar,food
+Crisps Salt Vinegar,food
+Crisps Cheese Onion,food
+Chips,food
+Popcorn,food
+Nuts Mixed,food
+Almonds,food
+Cashews,food
+Walnuts,food
+Sesame Seed,food
+Pumpkin Seeds,food
+Cookies Chocolate,food
+Biscuits Digestive,food
+Crackers,food
+Rice Cakes,food
+Muffins,food
+Filled Muffins,food
+Cake Chocolate,food
+Ice Cream Vanilla,food
+Frozen Pizza,food
+Frozen Chips,food
+Frozen Peas,food
+Fish Fingers Frozen,food
+Chicken Nuggets,food
+Orange Juice,food
+Apple Juice,food
+Cranberry Juice,food
+Coffee Ground,food
+Coffee Instant,food
+Folgers,food
+Folgers Coffee,food
+Tea Bags,food
+Green Tea,food
+Herbal Tea,food
+Water Still,food
+Water Sparkling,food
+Coca Cola,food
+Lemonade,food
+SC Twist Up,food
+Sushi Chef,food
+EQ Duo Pack,food
+Sweetarts,food
+Soap Bar,non_food
+Hand Soap,non_food
+Dish Soap,non_food
+Liquid Soap,non_food
+Antibacterial Soap,non_food
+Body Wash,non_food
+Shower Gel,non_food
+Shampoo,non_food
+Shampoo Anti Dandruff,non_food
+Conditioner Hair,non_food
+Hair Gel,non_food
+Hair Spray,non_food
+Toothpaste,non_food
+Toothpaste Whitening,non_food
+Toothbrush,non_food
+Toothbrush Electric Head,non_food
+Mouthwash,non_food
+Dental Floss,non_food
+Deodorant Roll On,non_food
+Deodorant Spray,non_food
+Antiperspirant,non_food
+Face Cream,non_food
+Moisturizer,non_food
+Body Lotion,non_food
+Hand Cream,non_food
+Sunscreen,non_food
+Lip Balm,non_food
+Razor,non_food
+Razor Blades,non_food
+Shaving Foam,non_food
+Shaving Gel,non_food
+Cotton Buds,non_food
+Cotton Pads,non_food
+Cotton Wool,non_food
+Tissue Box,non_food
+Tissues Pocket,non_food
+Toilet Paper,non_food
+Toilet Roll,non_food
+Kitchen Roll,non_food
+Kitchen Towel,non_food
+Paper Towel,non_food
+Cling Film,non_food
+Tin Foil,non_food
+Aluminium Foil,non_food
+Baking Paper,non_food
+Bin Bags,non_food
+Trash Bags,non_food
+Garbage Bags,non_food
+Freezer Bags,non_food
+Sandwich Bags,non_food
+Zip Lock Bags,non_food
+Washing Up Liquid,non_food
+Dishwasher Tablets,non_food
+Dishwasher Salt,non_food
+Laundry Detergent,non_food
+Fabric Softener,non_food
+Stain Remover,non_food
+Bleach,non_food
+Bleach Thick,non_food
+Surface Cleaner,non_food
+Glass Cleaner,non_food
+Bathroom Cleaner,non_food
+Toilet Cleaner,non_food
+Floor Cleaner,non_food
+Disinfectant,non_food
+Disinfectant Spray,non_food
+Sponge,non_food
+Scouring Pad,non_food
+Cleaning Cloth,non_food
+Microfibre Cloth,non_food
+Rubber Gloves,non_food
+Nitrile Gloves,non_food
+12 CT Nitril,non_food
+Disposable Gloves,non_food
+Air Freshener,non_food
+Candle Scented,non_food
+Candle,non_food
+Light Bulb,non_food
+LED Bulb,non_food
+Battery AA,non_food
+Battery AAA,non_food
+Batteries,non_food
+Sellotape,non_food
+Tape,non_food
+Tape Clear,non_food
+Glue Stick,non_food
+Super Glue,non_food
+Pen Black,non_food
+Pen Blue,non_food
+Pencil,non_food
+Marker,non_food
+Notebook,non_food
+Envelopes,non_food
+Stamps,non_food
+Wrapping Paper,non_food
+Birthday Card,non_food
+Nappy,non_food
+Nappies,non_food
+Diapers,non_food
+Baby Wipes,non_food
+Wet Wipes,non_food
+Face Wipes,non_food
+Plasters,non_food
+Bandage,non_food
+Paracetamol,non_food
+Ibuprofen,non_food
+Cold Medicine,non_food
+Cough Syrup,non_food
+Vitamins,non_food
+Vitamin C,non_food
+Multivitamin,non_food
+Pet Food,non_food
+Dog Food,non_food
+Cat Food,non_food
+Cat Litter,non_food
+Dog Treats,non_food
+Washing Powder,non_food
+Ironing Spray,non_food
+Shoe Polish,non_food
+Insect Repellent,non_food
+Fly Spray,non_food
+Mouse Trap,non_food
+Plant Pot,non_food
+Compost,non_food
+Plant Food,non_food
+Matches,non_food
+Lighter,non_food
+Cigarettes,non_food
+Magazine,non_food
+Newspaper,non_food
+Plastic Wrap,non_food
+Storage Container,non_food
+Clothes Hanger,non_food
+Lint Roller,non_food
+Sewing Kit,non_food
