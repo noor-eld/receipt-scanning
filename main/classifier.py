@@ -1,12 +1,15 @@
 # classifier.py
 # Classifies receipt items as food or non-food using a trained ML model.
 #
-# This uses a TF-IDF + Logistic Regression pipeline trained on labeled grocery data.
-# The model was trained by running train_model.py, which saved it to food_classifier.pkl.
+# Two layers of filtering:
+# 1. PREPROCESSING (regex) — catches obvious non-product lines like prices,
+#    dates, weights, and store info BEFORE they reach the model
+# 2. ML MODEL — classifies remaining lines as food or non_food
 #
-# The model still uses regex patterns to skip non-product lines (dates, totals, etc.)
-# — that's preprocessing, not classification. The ML model handles the actual
-# food vs non-food decision.
+# Why both? The ML model was trained on product names like "Chicken Breast"
+# and "Toilet Cleaner". It was never trained on "$4.66" or "0.778kg NET",
+# so it guesses poorly on those. Preprocessing removes them so the model
+# only sees actual product lines.
 
 import re
 import pickle
@@ -24,55 +27,95 @@ else:
     print(f"WARNING: {MODEL_PATH} not found. Run train_model.py first.")
 
 
+# --- Minimum confidence to accept a prediction ---
+# If the model is less than 70% sure, the item is marked "unknown"
+# so the user can decide. This prevents junk lines from slipping through.
+CONFIDENCE_THRESHOLD = 0.70
+
+
 # --- RECEIPT LINE PATTERNS TO SKIP ---
-# These are not product lines — they're receipt metadata.
-# This is preprocessing.
+# These are receipt metadata, not product lines.
+# This is preprocessing, not classification.
 SKIP_PATTERNS = [
-    r"^\s*$",                          # Empty lines
-    r"^\d{2}/\d{2}/\d{2,4}",          # Dates
-    r"^\d{2}:\d{2}",                   # Times
-    r"^ST#\s*\d+",                     # Store numbers
-    r"^TE#\s*\d+",                     # Terminal numbers
-    r"^TR#\s*\d+",                     # Transaction numbers
-    r"^\s*\d+\.\d{2}\s*(lb|kg)",       # Weight-only lines
-    r"^VAT",                           # VAT lines
-    r"^EFT",                           # Electronic fund transfer
-    r"^PAYMENT",                       # Payment lines
-    r"^ACCOUNT",                       # Account lines
-    r"^REF\s*#",                       # Reference numbers
-    r"^NETWORK",                       # Network ID lines
-    r"^TC#",                           # Transaction codes
+    # Empty and whitespace
+    r"^\s*$",
     r"^\s*\*+\s*$",                    # Just asterisks
     r"^-+$",                           # Just dashes
+
+    # Prices — lines that are ONLY a price (with or without currency symbol)
+    r"^[\$£€]?\s*-?\d+\.\d{2}\s*$",
+
+    # Weight/quantity lines (0.778kg NET @ $5.99/kg)
+    r"^\d+\.?\d*\s*kg\s+NET",
+    r"^\d+\.?\d*\s*lb\s+",
+
+    # Dates and times
+    r"^\d{2}/\d{2}/\d{2,4}",
+    r"^\d{2}:\d{2}",
+
+    # Store metadata
+    r"^ST#\s*\d+",
+    r"^TE#\s*\d+",
+    r"^TR#\s*\d+",
+    r"^OP#\s*\d+",
+
+    # Financial lines
+    r"^SUBTOTAL",
+    r"^TOTAL",
+    r"^TAX",
+    r"^CHANGE",
+    r"^CASH",
+    r"^DEBIT",
+    r"^CREDIT",
+    r"^TEND",
+    r"^AMEX",
+    r"^VISA",
+    r"^MASTERCARD",
+    r"^BALANCE",
+    r"^VAT",
+    r"^EFT",
+    r"^PAYMENT",
+    r"^ACCOUNT",
+
+    # Store info
+    r"^REF\s*#",
+    r"^NETWORK",
+    r"^TC#",
     r"^\d{4}\s+\d+",                   # Barcode-only lines
-    r"^Enter survey",                  # Survey prompts
-    r"^Layaway",                       # Store promotions
-    r"^Save money",                    # Store slogans
-    r"^You saved",                     # Savings lines
-    r"^SUBTOTAL",                      # Subtotal lines
-    r"^TOTAL",                         # Total lines
-    r"^TAX",                           # Tax lines
-    r"^CHANGE",                        # Change lines
-    r"^CASH",                          # Cash lines
-    r"^DEBIT",                         # Debit lines
-    r"^CREDIT",                        # Credit lines
-    r"^TEND",                          # Tender lines
-    r"^AMEX",                          # Payment method
-    r"^VISA",                          # Payment method
-    r"^ITEMS SOLD",                    # Items count
-    r"^Coupon",                        # Coupon lines
-    r"^LOYALTY",                       # Loyalty lines
-    r"^SALES",                         # Sales lines
-    r"^SPECIAL$",                      # Special lines with no product name
+    r"^Enter survey",
+    r"^Layaway",
+    r"^Save money",
+    r"^You saved",
+    r"^ITEMS SOLD",
+    r"^Coupon",
+    r"^LOYALTY",
+    r"^SALES",
+    r"^SPECIAL$",
+
+    # Very short lines — single words that are never product names
+    # (3 or fewer characters with no real product info)
+    r"^[A-Z]{1,3}$",                   # "WED", "MON", "TAX", etc.
+    r"^DATE$",
 ]
 
 
 def should_skip_line(line: str) -> bool:
-    """Check if a line is receipt metadata (not a product)."""
+    """
+    Check if a line is receipt metadata that should be filtered out
+    before reaching the ML model.
+    """
     line = line.strip()
+
     for pattern in SKIP_PATTERNS:
         if re.search(pattern, line, re.IGNORECASE):
             return True
+
+    # Additional check: if a line contains NO letters, skip it.
+    # Product names always have at least some text.
+    # This catches stray numbers, prices, and codes.
+    if not re.search(r"[a-zA-Z]", line):
+        return True
+
     return False
 
 
@@ -81,10 +124,11 @@ def classify_item(item_text: str) -> dict:
     Uses the trained ML model to classify a receipt line.
 
     Returns a dict with:
-    - label: "food" or "non_food"
+    - label: "food", "non_food", or "unknown"
     - confidence: how sure the model is (0.0 to 1.0)
 
-    If the model isn't loaded, defaults to "unknown".
+    If confidence is below the threshold, label becomes "unknown"
+    so the user can review it manually.
     """
     if model is None:
         return {"label": "unknown", "confidence": 0.0}
@@ -92,6 +136,10 @@ def classify_item(item_text: str) -> dict:
     prediction = model.predict([item_text])[0]
     probabilities = model.predict_proba([item_text])[0]
     confidence = float(max(probabilities))
+
+    # If the model isn't confident enough, mark as unknown
+    if confidence < CONFIDENCE_THRESHOLD:
+        return {"label": "unknown", "confidence": confidence}
 
     return {
         "label": prediction,
