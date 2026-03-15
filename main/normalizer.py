@@ -2,10 +2,16 @@
 # Normalizes messy receipt text into clean ingredient names using NLP techniques.
 #
 # APPROACH: Fuzzy String Matching
-# Instead of hardcoding "pnt = peanut" and "brst = breast:"
+# Instead of hardcoding "pnt = peanut" and "brst = breast", we:
 #   1. Clean the text (remove barcodes, prices, weights — basic preprocessing)
 #   2. Compare the cleaned text against a DATABASE of known ingredient names
 #   3. Use fuzzy matching to find the closest match
+#
+# WHY THIS IS BETTER THAN HARDCODING:
+#   - Handles misspellings we've never seen (e.g., "BROCOLI" → "broccoli")
+#   - Handles abbreviations without explicit mappings (e.g., "CHKN BRST" → "chicken breast")
+#   - Adapts to new receipts — if the ingredient is in the database, it gets matched
+#   - Adding new ingredients = adding to the database, not writing new code
 #
 # The library "rapidfuzz" implements fuzzy matching using algorithms like
 # Levenshtein distance (counting how many letter changes turn one string into another)
@@ -15,7 +21,7 @@ import re
 from rapidfuzz import fuzz, process
 
 # --- INGREDIENT DATABASE ---
-# This is the "dictionary" of clean ingredient names.
+# This is our "dictionary" of clean ingredient names.
 # Fuzzy matching compares receipt text against these to find the best match.
 # To support a new ingredient, just add it here — no code changes needed.
 INGREDIENT_DATABASE = [
@@ -154,22 +160,14 @@ def normalize_ingredient(raw_text: str) -> str:
     """
     Takes messy receipt text and returns a clean ingredient name.
 
-    Process:
-    1. Preprocess: remove barcodes, prices, weights, codes
-    2. Fuzzy match against ingredient database
-    3. If good match found (score >= 60), return the clean database name
-    4. If no match, return the preprocessed text as-is (user can edit it)
+    Uses a MULTI-STRATEGY approach to find the best match:
 
-    The score threshold of 60 was chosen because:
-    - Exact matches score 100 ("broccoli" → "broccoli")
-    - Close matches score 70-90 ("brocoli" → "broccoli")
-    - Partial matches score 50-70 ("GV PNT BUTTR" → "peanut butter")
-    - Unrelated text scores below 50
+    Strategy 1: Match the FULL cleaned text against the database.
+        Good for: "BANANA CAVENDISH" → "banana" (full phrase comparison)
 
-    fuzz.token_set_ratio is used as the scorer because it:
-    - Ignores word order ("green grapes" matches "grapes green")
-    - Handles extra words ("organic banana loose" still matches "banana")
-    - Compares meaningful tokens, not just raw characters
+    Strategy 2: Match EACH WORD individually against the database.
+        Good for: "ZUCHINNI GREEN" → "zucchini" (the important word is zuchinni,
+        not green — matching word by word catches this)
     """
 
     cleaned = _preprocess_text(raw_text)
@@ -177,18 +175,50 @@ def normalize_ingredient(raw_text: str) -> str:
     if not cleaned:
         return raw_text.lower().strip()
 
-    # process.extractOne compares cleaned text against every entry
-    # in INGREDIENT_DATABASE and returns the best match with a score.
-    result = process.extractOne(
+    best_match = None
+    best_score = 0.0
+
+    # Strategy 1: Match the full cleaned text
+    # Uses WRatio which tries multiple comparison methods and picks the best.
+    # Good for multi-word ingredients like "peanut butter" or "cherry tomato"
+    full_result = process.extractOne(
         query=cleaned,
         choices=INGREDIENT_DATABASE,
-        scorer=fuzz.token_set_ratio,
+        scorer=fuzz.WRatio,
         score_cutoff=60.0,
     )
 
-    if result:
-        match, score, index = result
-        return match
+    if full_result:
+        match, score, index = full_result
+        if score > best_score:
+            best_match = match
+            best_score = score
+
+    # Strategy 2: Match each word individually
+    # Split "ZUCHINNI GREEN" into ["zuchinni", "green"] and match each one.
+    # This catches cases where one word is the ingredient and the other is noise.
+    words = cleaned.split()
+    for word in words:
+        if len(word) < 3:  # Skip tiny words like "gv", "sc"
+            continue
+
+        word_result = process.extractOne(
+            query=word,
+            choices=INGREDIENT_DATABASE,
+            scorer=fuzz.ratio,  # Strict character comparison for single words
+            score_cutoff=70.0,  # Higher threshold for single words to avoid false matches
+        )
+
+        if word_result:
+            match, score, index = word_result
+            # Boost single-word matches slightly less than full-phrase matches
+            # so "peanut butter" (full match) beats "peanut" (word match)
+            adjusted_score = score * 0.95
+            if adjusted_score > best_score:
+                best_match = match
+                best_score = adjusted_score
+
+    if best_match:
+        return best_match
     else:
-        # No good match — return cleaned text for the user to review
         return cleaned
