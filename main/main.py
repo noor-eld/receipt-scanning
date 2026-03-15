@@ -25,7 +25,7 @@ VISION_API_URL = f"https://vision.googleapis.com/v1/images:annotate?key={GOOGLE_
 app = FastAPI(
     title="Recipe App - Receipt Scanner API",
     description="Processes receipt images and extracts food ingredients using ML",
-    version="0.2.0",
+    version="0.3.0",
 )
 
 app.add_middleware(
@@ -71,13 +71,11 @@ def extract_text_from_image(image_bytes: bytes) -> str:
 
 def parse_receipt_text(ocr_text: str) -> list[dict]:
     """
-    Processes raw OCR text into classified items using the ML model.
+    Processes raw OCR text into classified food items using the ML model.
 
-    Steps:
-    1. Split into lines
-    2. Skip receipt metadata (dates, totals, store info)
-    3. Classify each line with the ML model
-    4. Return food items and low-confidence items for user review
+    Only returns items the model is confident are food.
+    Non-food and uncertain items are filtered out — the user should only
+    see actual ingredients on their review screen.
     """
 
     lines = ocr_text.strip().split("\n")
@@ -87,17 +85,17 @@ def parse_receipt_text(ocr_text: str) -> list[dict]:
     for line in lines:
         line = line.strip()
 
+        # Preprocessing: skip lines that are clearly not products
         if not line or should_skip_line(line):
             continue
 
-        # Use the ML model to classify
+        # ML classification
         prediction = classify_item(line)
-
         label = prediction["label"]
         confidence = prediction["confidence"]
 
-        # Skip items the model is confident are non-food
-        if label == "non_food" and confidence > 0.7:
+        # ONLY include items the model classifies as food
+        if label != "food":
             continue
 
         # Avoid duplicates
@@ -125,7 +123,7 @@ async def health_check():
 async def process_receipt(image_file: UploadFile = File(...)):
     """
     Receives a receipt image, runs OCR, classifies items with ML model,
-    and returns detected food items with confidence scores.
+    and returns only detected food items.
     """
 
     try:
@@ -150,7 +148,7 @@ async def process_receipt(image_file: UploadFile = File(...)):
 
     return {
         "success": True,
-        "message": f"Found {len(ingredients)} item(s)",
+        "message": f"Found {len(ingredients)} ingredient(s)",
         "ingredients": ingredients,
         "raw_text": ocr_text,
     }

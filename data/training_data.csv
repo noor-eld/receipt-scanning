@@ -2,6 +2,11 @@ product_name,label
 Whole Milk,food
 Semi Skimmed Milk,food
 Skimmed Milk 1L,food
+Milk 2 Pint,food
+Oat Milk,food
+Almond Milk,food
+Soy Milk,food
+Coconut Milk,food
 Banana,food
 Banana Loose,food
 Banana Cavendish,food
@@ -9,73 +14,126 @@ Organic Banana,food
 Apple Royal Gala,food
 Apple Granny Smith,food
 Red Apple,food
+Gala Apples,food
+Pink Lady Apple,food
 Orange,food
+Blood Orange,food
+Satsuma,food
+Clementine,food
+Mandarin,food
 Lemon,food
 Lime,food
 Grapes Green,food
 Grapes Red Seedless,food
 Strawberries 1kg,food
+Strawberries,food
 Blueberries,food
 Raspberries,food
+Blackberries,food
 Mango,food
 Pineapple,food
+Fruit Pine Topper,food
 Watermelon,food
 Avocado,food
 Pear,food
 Peach,food
+Nectarine,food
+Plum,food
+Cherry Plum Tomatoes,food
 Kiwi Fruit,food
-Cherry Tomatoes,food
+Melon,food
+Pomegranate,food
+Passion Fruit,food
+Coconut,food
+Fig,food
+Apricot,food
+Tomato,food
 Tomatoes Grape,food
 Tomatoes On The Vine,food
+Cherry Tomatoes,food
+Chopped Tomatoes,food
+Tinned Tomatoes,food
 Potato,food
 Potatoes Brushed,food
 Baby Potatoes,food
 Sweet Potato,food
+Maris Piper Potatoes,food
+Rooster Potatoes,food
 Onion Brown,food
 Onion Red,food
 White Onion,food
 Green Onions,food
 Spring Onion,food
+Mild Onions,food
+Shallots,food
 Garlic,food
 Garlic Bulb,food
 Carrot,food
+Carrots,food
 Carrots Baby,food
 Broccoli,food
 Broc Crowns,food
 Broccoli Florets,food
+Tenderstem Broccoli,food
 Spinach Baby,food
 Spinach Leaves,food
+Spinach,food
 Lettuce Iceberg,food
 Romaine Lettuce,food
+Mixed Lettuce,food
+Baby Gem Lettuce,food
+Rocket Leaves,food
 Cucumber,food
 Celery,food
+Celery Sticks,food
 Corn On Cob,food
 Sweet Corn,food
+Baby Corn,food
 Mushroom White,food
 Mushrooms Sliced,food
+Chestnut Mushrooms,food
+Portobello Mushroom,food
 Zucchini Green,food
+Zuchinni Green,food
 Courgette,food
 Cabbage,food
 Red Cabbage,food
+Savoy Cabbage,food
 Cauliflower,food
 Green Beans,food
 Runner Beans,food
+Fine Beans,food
 Peas Snow,food
 Garden Peas,food
+Mange Tout,food
+Sugar Snap Peas,food
 Brussel Sprouts,food
 Asparagus,food
 Kale,food
+Curly Kale,food
 Leek,food
 Pepper Red,food
 Pepper Green,food
 Bell Pepper Yellow,food
+Loose Peppers,food
+Mixed Peppers,food
 Chili Pepper,food
 Jalapeno,food
 Ginger Root,food
 Fresh Herbs Basil,food
+Basil,food
+Fresh Basil,food
 Fresh Coriander,food
+Coriander,food
 Fresh Parsley,food
+Parsley,food
 Fresh Mint,food
+Mint,food
+Rosemary,food
+Thyme,food
+Dill,food
+Chives,food
+Sage,food
 Chicken Breast,food
 Chicken Breast Fillet,food
 Bnls Brst,food
@@ -85,20 +143,28 @@ Chicken Wing,food
 Whole Chicken,food
 Chkn Breast,food
 GV Chnk Chkn,food
+Chicken Pieces,food
+Chicken Strips,food
 Beef Mince,food
+Beef Mince 500g,food
 Beef Steak,food
 Ground Beef,food
 Beef Sirloin,food
 NY Strip Thn,food
 Bnls Brst MD,food
+Stewing Beef,food
+Beef Burger,food
 Pork Chop,food
 Pork Loin,food
 Pork Mince,food
+Pork Belly,food
 Bacon,food
 Bacon Smoked,food
 Back Bacon,food
+Streaky Bacon,food
 Turkey Breast,food
 Turkey Mince,food
+Turkey Slices,food
 Lamb Leg,food
 Lamb Chop,food
 Lamb Mince,food
@@ -110,12 +176,18 @@ Haddock,food
 Prawns,food
 Shrimp,food
 Fish Fingers,food
+Sea Bass,food
+Mackerel,food
 Sausage Pork,food
 Sausage Beef,food
 Cumberland Sausage,food
+Pork Sausages,food
+Chipolatas,food
 Ham Sliced,food
 Salami,food
 Pepperoni,food
+Chorizo,food
+Prosciutto,food
 Cheddar Cheese,food
 Mozzarella,food
 Parmesan,food
@@ -125,6 +197,11 @@ Feta Cheese,food
 Brie,food
 Gouda,food
 Swiss Cheese,food
+Halloumi,food
+Cottage Cheese,food
+Ricotta,food
+Grated Cheese,food
+Cheese Slices,food
 Butter Unsalted,food
 Butter Salted,food
 GV Pnt Buttr,food
@@ -135,12 +212,16 @@ Eggs 12 Pack,food
 Free Range Eggs,food
 Egg Best Org,food
 Eggs,food
+Medium Eggs,food
+Large Eggs,food
 Yogurt Natural,food
 Greek Yoghurt,food
 Yogurt Strawberry,food
+Protein Yogurt,food
 Double Cream,food
 Single Cream,food
 Sour Cream,food
+Creme Fraiche,food
 Bread White,food
 Bread Wholemeal,food
 Bread Sourdough,food
@@ -148,43 +229,71 @@ Sliced Bread,food
 Bagel,food
 Croissant,food
 Bread Roll,food
+High Protein Roll,food
 Pitta Bread,food
 Tortilla Wrap,food
 Naan Bread,food
+Brioche,food
+Ciabatta,food
+Baguette,food
+Seeded Bread,food
+Tiger Bread,food
 Rice White,food
 Rice Basmati,food
 Rice Brown,food
 Jasmine Rice,food
 Mahatma Jasm,food
+Long Grain Rice,food
+Risotto Rice,food
+Wild Rice,food
 Pasta Penne,food
 Pasta Fusilli,food
 Fusilli HWG,food
 Spaghetti,food
+Simply Spaghetti,food
+Tagliatelle,food
+Linguine,food
+Macaroni,food
+Lasagne Sheets,food
 Noodles Egg,food
 Rice Noodles,food
+Udon Noodles,food
+Instant Noodles,food
 Flour Plain,food
 Flour Self Raising,food
+Strong Bread Flour,food
+Cornflour,food
 Oats Porridge,food
 Cereal Cornflakes,food
 Granola,food
 Muesli,food
+Swiss Muesli ORG,food
+Bran Flakes,food
+Weetabix,food
+Porridge Oats,food
 Sugar White,food
 Sugar Brown,food
 Caster Sugar,food
 Icing Sugar,food
+Demerara Sugar,food
 Salt Table,food
 Sea Salt,food
 WM Sea Salt,food
+Rock Salt,food
 Olive Oil,food
+Olive Oil Extra Virgin,food
 Vegetable Oil,food
 Sunflower Oil,food
 Coconut Oil,food
 Sesame Oil,food
 Acocado Oil,food
 Avocado Oil,food
+Rapeseed Oil,food
 Vinegar White,food
 Balsamic Vinegar,food
 Apple Cider Vinegar,food
+Red Wine Vinegar,food
+White Wine Vinegar,food
 Soy Sauce,food
 Oyster Sauce,food
 Hoisin Sauce,food
@@ -192,40 +301,65 @@ Sriracha Sce,food
 Sriracha Sauce,food
 Tomato Ketchup,food
 Mustard,food
+Dijon Mustard,food
+English Mustard,food
+Wholegrain Mustard,food
 Mayonnaise,food
 BBQ Sauce,food
 Hot Sauce,food
 Worcestershire Sauce,food
+Sweet Chili Sauce,food
+Pesto,food
 Honey,food
 Maple Syrup,food
+Golden Syrup,food
 Jam Strawberry,food
 Marmalade,food
 Peanut Butter Smooth,food
 Nutella,food
+Lemon Curd,food
 Black Pepper,food
 Gr Pepercrn,food
 Ground Peppercorn,food
 Cumin Ground,food
 Paprika,food
+Smoked Paprika,food
 Cinnamon Ground,food
 Turmeric,food
 Chili Powder,food
 Oregano Dried,food
 Mixed Herbs,food
 Curry Powder,food
+Garam Masala,food
+Chinese Five Spice,food
+Italian Seasoning,food
+Bay Leaves,food
+Nutmeg,food
 Stock Cube Chicken,food
 Stock Cube Beef,food
+Stock Cube Vegetable,food
+Oxo 12 Veg Stock,food
+Vegetable Stock,food
+Chicken Stock,food
+Beef Stock,food
 Tomato Puree,food
-Chopped Tomatoes,food
-Coconut Milk,food
+Tomato Paste,food
+Passata,food
+Coconut Cream,food
 Baked Beans,food
 Kidney Beans,food
 Chickpeas,food
 Lentils,food
+Red Lentils,food
+Black Beans,food
+Butter Beans,food
+Cannellini Beans,food
 Canned Tuna,food
 Canned Sweetcorn,food
+Canned Peas,food
 Soup Tomato,food
 Soup Chicken,food
+Minestrone Soup,food
 Chocolate Milk,food
 Dark Chocolate,food
 Milk Chocolate,food
@@ -233,44 +367,84 @@ Chocolate Bar,food
 Crisps Salt Vinegar,food
 Crisps Cheese Onion,food
 Chips,food
+Tortilla Chips,food
 Popcorn,food
 Nuts Mixed,food
 Almonds,food
 Cashews,food
 Walnuts,food
+Pistachios,food
 Sesame Seed,food
+Sesame Seeds,food
 Pumpkin Seeds,food
+Sunflower Seeds,food
+Chia Seeds,food
+Flax Seeds,food
 Cookies Chocolate,food
 Biscuits Digestive,food
+Rich Tea Biscuits,food
 Crackers,food
 Rice Cakes,food
 Muffins,food
 Filled Muffins,food
 Cake Chocolate,food
+Brownie,food
+Flapjack,food
+Scone,food
+Danish Pastry,food
 Ice Cream Vanilla,food
+Ice Cream Chocolate,food
 Frozen Pizza,food
 Frozen Chips,food
 Frozen Peas,food
+Frozen Sweetcorn,food
 Fish Fingers Frozen,food
 Chicken Nuggets,food
+Frozen Berries,food
 Orange Juice,food
 Apple Juice,food
 Cranberry Juice,food
+Tropical Juice,food
+Smoothie,food
 Coffee Ground,food
 Coffee Instant,food
+Coffee Beans,food
 Folgers,food
 Folgers Coffee,food
 Tea Bags,food
 Green Tea,food
 Herbal Tea,food
+Chamomile Tea,food
+Earl Grey,food
 Water Still,food
 Water Sparkling,food
+Tonic Water,food
 Coca Cola,food
 Lemonade,food
 SC Twist Up,food
 Sushi Chef,food
 EQ Duo Pack,food
 Sweetarts,food
+Hummus,food
+Guacamole,food
+Salsa,food
+Coleslaw,food
+Tofu,food
+Tempeh,food
+Quorn Mince,food
+Plant Burger,food
+Protein Bar,food
+Energy Bar,food
+Dried Fruit,food
+Raisins,food
+Sultanas,food
+Dried Apricots,food
+Dates,food
+Cous Cous,food
+Quinoa,food
+Bulgur Wheat,food
+Polenta,food
+WUL Big Size Lemon,food
 Soap Bar,non_food
 Hand Soap,non_food
 Dish Soap,non_food
@@ -406,3 +580,176 @@ Storage Container,non_food
 Clothes Hanger,non_food
 Lint Roller,non_food
 Sewing Kit,non_food
+Contact Lidl Customer Service at,non_food
+Contact us at,non_food
+Contact Customer Service,non_food
+Customer Service Helpline,non_food
+Visit us at,non_food
+Call us on,non_food
+Let us know your feedback,non_food
+Let us know your Lidl surprise on,non_food
+Let us know your thoughts,non_food
+Share your experience,non_food
+Rate your visit,non_food
+Tell us about your shop,non_food
+Facebook,non_food
+Twitter,non_food
+Instagram,non_food
+Facebook - /lidluk,non_food
+Twitter - @lidluk,non_food
+Instagram - @lidl,non_food
+Follow us on social media,non_food
+facebook.com,non_food
+twitter.com,non_food
+instagram.com,non_food
+lidl.co.uk,non_food
+lidl.co.uk/contact,non_food
+idl.co.uk/contact,non_food
+tesco.com,non_food
+aldi.co.uk,non_food
+asda.com,non_food
+sainsburys.co.uk,non_food
+walmart.com,non_food
+www.lidl.co.uk,non_food
+www.tesco.com,non_food
+www.aldi.co.uk,non_food
+LIDL,non_food
+Lidl,non_food
+TESCO,non_food
+Tesco,non_food
+ALDI,non_food
+Aldi,non_food
+ASDA,non_food
+Asda,non_food
+SAINSBURYS,non_food
+Sainsbury,non_food
+WALMART,non_food
+Walmart,non_food
+Morrisons,non_food
+MORRISONS,non_food
+Waitrose,non_food
+WAITROSE,non_food
+Iceland,non_food
+Marks and Spencer,non_food
+Portsmouth,non_food
+London,non_food
+Manchester,non_food
+Birmingham,non_food
+Liverpool,non_food
+Leeds,non_food
+Bristol,non_food
+Dublin,non_food
+Edinburgh,non_food
+Glasgow,non_food
+Cardiff,non_food
+Belfast,non_food
+Truro,non_food
+Mobile AL,non_food
+Tampa FL,non_food
+CARD,non_food
+CARD PAYMENT,non_food
+=== CARD PAYMENT ===,non_food
+CONTACTLESS,non_food
+Contactless Payment,non_food
+CHIP AND PIN,non_food
+Apple Pay,non_food
+Google Pay,non_food
+VISA DEBIT,non_food
+MASTERCARD,non_food
+AMEX,non_food
+AID,non_food
+PAN,non_food
+AUTH CODE,non_food
+MERCHANT,non_food
+TERMINAL,non_food
+APPROVED,non_food
+VERIFIED BY PIN,non_food
+PLEASE RETAIN RECEIPT,non_food
+Please keep your receipt,non_food
+Thank you for shopping,non_food
+Thank you for shopping with us,non_food
+Thank you,non_food
+Thanks for shopping,non_food
+Thank you for visiting,non_food
+See you again soon,non_food
+We hope to see you again,non_food
+Have a great day,non_food
+Enjoy your meal,non_food
+Your cashier today was,non_food
+Served by,non_food
+Cashier,non_food
+Store Manager,non_food
+Manager,non_food
+Store Number,non_food
+Store No,non_food
+Branch,non_food
+Receipt Number,non_food
+Transaction Number,non_food
+VAT Number,non_food
+VAT NO,non_food
+VAT REG NO,non_food
+Company Reg No,non_food
+Registered Office,non_food
+Head Office,non_food
+Tel,non_food
+Telephone,non_food
+Phone,non_food
+Enter survey,non_food
+Enter our survey,non_food
+Win a voucher,non_food
+Win a gift card,non_food
+Chance to win,non_food
+Take our survey,non_food
+Scan QR code,non_food
+haveyoursay,non_food
+your-feedback,non_food
+lidl.co.uk/haveyoursay,non_food
+tesco.com/yourvoice,non_food
+ITEMS SOLD,non_food
+# ITEMS SOLD 13,non_food
+ITEMS,non_food
+Number of items,non_food
+Bag Charge,non_food
+Carrier Bag,non_food
+Bag,non_food
+5p Bag Charge,non_food
+10p Bag Charge,non_food
+Bag for Life,non_food
+CLUBCARD,non_food
+Clubcard Points,non_food
+Lidl Plus,non_food
+Nectar Points,non_food
+Nectar,non_food
+Reward Points,non_food
+Points Balance,non_food
+Points Earned,non_food
+Member Number,non_food
+Loyalty Card,non_food
+Coupon Plus reward,non_food
+Coupon Plus bakery reward,non_food
+COUPON SAVINGS,non_food
+You saved,non_food
+Total Savings,non_food
+Savings,non_food
+Discount,non_food
+Price Reduction,non_food
+Reduced,non_food
+SPECIAL OFFER,non_food
+MULTIBUY,non_food
+2 FOR 1,non_food
+BUY ONE GET ONE FREE,non_food
+3 FOR 2,non_food
+PRICE MATCH,non_food
+Layaway is back for Electronics,non_food
+Save money Live better,non_food
+Every Little Helps,non_food
+Good Food Costs Less,non_food
+Big on Quality Lidl on Price,non_food
+Spend and Save,non_food
+EFT DEBIT,non_food
+PAY FROM PRIMARY,non_food
+PAYMENT DECLINED,non_food
+CHANGE DUE,non_food
+TOTAL PURCHASE,non_food
+Mgr,non_food
+OP#,non_food
