@@ -9,3 +9,4 @@ python-dotenv    # Reads the .env file
 Pillow           # Image processing library (resizing, converting formats)
 scikit-learn       # ML library — TF-IDF, Logistic Regression, cross-validation
 pandas             # Data handling — reads the training CSV
+rapidfuzz           # Fuzzy string matching for ingredient normalization

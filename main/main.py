@@ -1,10 +1,10 @@
 # main.py
-# FastAPI server: receives receipt images, runs OCR, and classifies items
-# using a trained ML model (TF-IDF + Logistic Regression).
+# FastAPI server: receives receipt images, runs OCR, classifies items with ML,
+# and normalizes food items into clean ingredient names.
 #
 # HOW TO RUN:
-#   1. First train the model: python train_model.py
-#   2. Then start the server: python main.py
+#   1. Train the model: python train_model.py
+#   2. Start the server: python main.py
 #   3. Test at http://localhost:8000/docs
 
 import base64
@@ -16,6 +16,7 @@ from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
 from classifier import classify_item, should_skip_line
+from normalizer import normalize_ingredient
 
 load_dotenv()
 
@@ -25,7 +26,7 @@ VISION_API_URL = f"https://vision.googleapis.com/v1/images:annotate?key={GOOGLE_
 app = FastAPI(
     title="Recipe App - Receipt Scanner API",
     description="Processes receipt images and extracts food ingredients using ML",
-    version="0.3.0",
+    version="0.4.0",
 )
 
 app.add_middleware(
@@ -71,11 +72,12 @@ def extract_text_from_image(image_bytes: bytes) -> str:
 
 def parse_receipt_text(ocr_text: str) -> list[dict]:
     """
-    Processes raw OCR text into classified food items using the ML model.
-
-    Only returns items the model is confident are food.
-    Non-food and uncertain items are filtered out — the user should only
-    see actual ingredients on their review screen.
+    Full receipt processing pipeline:
+    1. Split OCR text into lines
+    2. Skip receipt metadata (preprocessing)
+    3. Classify each line with ML model
+    4. Normalize food items into clean ingredient names
+    5. Return only food items with clean names
     """
 
     lines = ocr_text.strip().split("\n")
@@ -85,7 +87,6 @@ def parse_receipt_text(ocr_text: str) -> list[dict]:
     for line in lines:
         line = line.strip()
 
-        # Preprocessing: skip lines that are clearly not products
         if not line or should_skip_line(line):
             continue
 
@@ -94,18 +95,20 @@ def parse_receipt_text(ocr_text: str) -> list[dict]:
         label = prediction["label"]
         confidence = prediction["confidence"]
 
-        # ONLY include items the model classifies as food
         if label != "food":
             continue
 
-        # Avoid duplicates
-        if line.lower() in seen:
+        # Normalize: "GV PNT BUTTR 007874237003 F" → "peanut butter"
+        ingredient = normalize_ingredient(line)
+
+        # Skip if normalization returned empty or duplicate
+        if not ingredient or ingredient in seen:
             continue
-        seen.add(line.lower())
+        seen.add(ingredient)
 
         results.append({
             "raw_text": line,
-            "category": label,
+            "ingredient": ingredient,
             "confidence": round(confidence, 2),
         })
 
@@ -122,8 +125,8 @@ async def health_check():
 @app.post("/api/receipt/process")
 async def process_receipt(image_file: UploadFile = File(...)):
     """
-    Receives a receipt image, runs OCR, classifies items with ML model,
-    and returns only detected food items.
+    Receives a receipt image, runs OCR, classifies items with ML,
+    normalizes ingredient names, and returns clean results.
     """
 
     try:
