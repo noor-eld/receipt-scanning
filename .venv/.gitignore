@@ -11,8 +11,15 @@ venv/
 .idea/
 
 # Data (receipt images shouldn't be on GitHub)
-data/
+data/*.jpeg
+data/*.jpg
+data/*.webp
+data/*.png
 
 # OS files
 .DS_Store
 Thumbs.db
+
+food_classifier.pkl
+
+main/old_main.py
