@@ -753,32 +753,24 @@ CHANGE DUE,non_food
 TOTAL PURCHASE,non_food
 Mgr,non_food
 OP#,non_food
-Mild Onions,food
 Sweet Onions,food
 Red Onions,food
 Brown Onions,food
 Onions,food
-Carrots,food
-Carrot,food
 Baby Carrots,food
-Celery,food
 Celery Hearts,food
-Simply Spaghetti,food
 Simply Pasta,food
 Simply Rice,food
-Oxo 12 Veg Stock,food
 Oxo Veg Stock Cubes,food
 Oxo Chicken Stock,food
 Oxo Beef Stock,food
 Veg Stock,food
 Veg Stock Cubes,food
-High Protein Roll,food
 Protein Roll,food
 Seeded Roll,food
 Wholemeal Roll,food
 White Roll,food
 Dinner Roll,food
-Fruit Pine Topper,food
 Pine Topper,food
 Pineapple Topper,food
 Mixed Fruit,food
@@ -918,3 +910,245 @@ Cauldron Tofu,food
 Alpro Soya,food
 Oatly,food
 Violife Cheese,food
+Bell Pepper,food
+Parmesan Cheese,food
+Coconut Sugar,food
+Anchovies,food
+Cheese,food
+Yogurt,food
+Digestive Biscuit,food
+Egg (Turkey),food
+Ricotta Cheese,food
+Eggplant,food
+Whole Wheat Flour,food
+Arabica Coffee,food
+Sourdough Bread,food
+Green Coffee,food
+Tilapia,food
+Arborio Rice,food
+Bread Flour,food
+Milk,food
+Rice Flour,food
+Whole Wheat Bread,food
+Robusta Coffee,food
+Chocolate Biscuit,food
+Palm Oil,food
+Lettuce,food
+Peanut Oil,food
+Egg (Duck),food
+Trout,food
+Onion,food
+Cream,food
+Sardines,food
+Sushi Rice,food
+Black Rice,food
+All-Purpose Flour,food
+Whipped Cream,food
+Grapes,food
+Short Grain Rice,food
+Tuna,food
+Almond Flour,food
+Greek Yogurt,food
+Mushrooms,food
+Black Tea,food
+White Tea,food
+White Rice,food
+Rye Bread,food
+Egg (Goose),food
+Brown Rice,food
+Black Coffee,food
+White Sugar,food
+Egg (Quail),food
+Buttermilk,food
+Evaporated Milk,food
+Powdered Sugar,food
+Cod,food
+Kiwi,food
+Gouda Cheese,food
+Canola Oil,food
+Basmati Rice,food
+Oatmeal Biscuit,food
+Apple,food
+Peas,food
+Multigrain Bread,food
+Halibut,food
+Salmon,food
+Corn Oil,food
+Cherry,food
+Zucchini,food
+Butter Biscuit,food
+Egg (Chicken),food
+White Bread,food
+Vanilla Biscuit,food
+Papaya,food
+Butter,food
+Heavy Cream,food
+Mozzarella Cheese,food
+Raw Sugar,food
+tropical fruit,food
+whole milk,food
+pip fruit,food
+other vegetables,food
+rolls/buns,food
+pot plants,non_food
+citrus fruit,food
+beef,food
+frankfurter,food
+chicken,food
+butter,food
+fruit/vegetable juice,food
+packaged fruit/vegetables,food
+chocolate,food
+specialty bar,food
+butter milk,food
+bottled water,food
+yogurt,food
+sausage,food
+brown bread,food
+hamburger meat,food
+root vegetables,food
+pork,food
+pastry,food
+canned beer,food
+berries,food
+coffee,food
+misc. beverages,food
+ham,food
+turkey,food
+curd cheese,food
+red/blush wine,food
+frozen potato products,food
+flour,food
+sugar,food
+frozen meals,food
+herbs,food
+soda,food
+detergent,non_food
+grapes,food
+processed cheese,food
+fish,food
+sparkling wine,food
+newspapers,non_food
+curd,food
+pasta,food
+popcorn,food
+finished products,food
+beverages,food
+bottled beer,food
+dessert,food
+dog food,non_food
+specialty chocolate,food
+condensed milk,food
+cleaner,non_food
+white wine,food
+meat,food
+ice cream,food
+hard cheese,food
+cream cheese,food
+liquor,food
+pickled vegetables,food
+liquor (appetizer),food
+UHT-milk,food
+candy,food
+onions,food
+hair spray,non_food
+photo/film,non_food
+domestic eggs,food
+margarine,food
+shopping bags,non_food
+salt,food
+oil,food
+whipped/sour cream,food
+frozen vegetables,food
+sliced cheese,food
+dish cleaner,non_food
+baking powder,food
+specialty cheese,food
+salty snack,food
+Instant food products,food
+pet care,non_food
+white bread,food
+female sanitary products,non_food
+cling film/bags,non_food
+soap,non_food
+frozen chicken,food
+house keeping products,non_food
+spread cheese,food
+decalcifier,non_food
+frozen dessert,food
+vinegar,food
+nuts/prunes,food
+potato products,food
+frozen fish,food
+hygiene articles,non_food
+artif. sweetener,food
+light bulbs,non_food
+canned vegetables,food
+chewing gum,food
+canned fish,food
+cookware,non_food
+semi-finished bread,food
+cat food,non_food
+bathroom cleaner,non_food
+prosecco,food
+liver loaf,food
+zwieback,food
+canned fruit,food
+frozen fruits,food
+brandy,food
+baby cosmetics,non_food
+spices,food
+napkins,non_food
+waffles,food
+sauces,food
+rum,food
+chocolate marshmallow,food
+long life bakery product,food
+bags,non_food
+sweet spreads,food
+soups,food
+mustard,food
+specialty fat,food
+instant coffee,food
+snack products,food
+organic sausage,food
+soft cheese,food
+mayonnaise,food
+dental care,non_food
+roll products,food
+kitchen towels,non_food
+flower soil/fertilizer,non_food
+cereals,food
+meat spreads,food
+dishes,non_food
+male cosmetics,non_food
+candles,non_food
+whisky,food
+tidbits,food
+cooking chocolate,food
+seasonal products,food
+liqueur,food
+abrasive cleaner,non_food
+syrup,food
+ketchup,food
+cream,food
+skin care,non_food
+rubbing alcohol,non_food
+nut snack,food
+cocoa drinks,food
+softener,non_food
+organic products,food
+cake bar,food
+honey,food
+jam,food
+kitchen utensil,non_food
+flower (seeds),non_food
+rice,food
+tea,food
+salad dressing,food
+specialty vegetables,food
+pudding powder,food
+ready soups,food
+make up remover,non_food
+toilet cleaner,non_food
+preservation products,food
