@@ -753,3 +753,168 @@ CHANGE DUE,non_food
 TOTAL PURCHASE,non_food
 Mgr,non_food
 OP#,non_food
+Mild Onions,food
+Sweet Onions,food
+Red Onions,food
+Brown Onions,food
+Onions,food
+Carrots,food
+Carrot,food
+Baby Carrots,food
+Celery,food
+Celery Hearts,food
+Simply Spaghetti,food
+Simply Pasta,food
+Simply Rice,food
+Oxo 12 Veg Stock,food
+Oxo Veg Stock Cubes,food
+Oxo Chicken Stock,food
+Oxo Beef Stock,food
+Veg Stock,food
+Veg Stock Cubes,food
+High Protein Roll,food
+Protein Roll,food
+Seeded Roll,food
+Wholemeal Roll,food
+White Roll,food
+Dinner Roll,food
+Fruit Pine Topper,food
+Pine Topper,food
+Pineapple Topper,food
+Mixed Fruit,food
+Fruit Salad,food
+Fruit Pot,food
+Fruit Bowl,food
+Mixed Berries,food
+Mild Cheddar,food
+Mature Cheddar,food
+Extra Mature Cheddar,food
+Red Leicester,food
+Wensleydale,food
+Stilton,food
+Cathedral City,food
+Pilgrims Choice,food
+Philadelphia,food
+Lurpak,food
+Anchor Butter,food
+Kerrygold Butter,food
+Bertolli Spread,food
+Flora Spread,food
+Warburtons Bread,food
+Hovis Bread,food
+Kingsmill Bread,food
+Roberts Bread,food
+Jacobs Crackers,food
+Ritz Crackers,food
+Carrs Crackers,food
+McVities Biscuits,food
+Digestive Biscuits,food
+Rich Tea,food
+Bourbon Biscuits,food
+Custard Creams,food
+Jaffa Cakes,food
+Kit Kat,food
+Dairy Milk,food
+Aero,food
+Twirl,food
+Penguin,food
+Club Orange,food
+Walkers Crisps,food
+Pringles,food
+Doritos,food
+Kettle Chips,food
+Tyrrells Crisps,food
+McCoys Crisps,food
+Hula Hoops,food
+Monster Munch,food
+Wotsits,food
+Quavers,food
+Mini Cheddars,food
+Batchelors Super Noodles,food
+Pot Noodle,food
+Cup A Soup,food
+Heinz Soup,food
+Heinz Beans,food
+Heinz Spaghetti,food
+Heinz Ketchup,food
+HP Sauce,food
+Branston Pickle,food
+Marmite,food
+Bovril,food
+Bisto Gravy,food
+Oxo Cubes,food
+Knorr Stock Pot,food
+Dolmio Sauce,food
+Ragu Sauce,food
+Loyd Grossman Sauce,food
+Uncle Bens Rice,food
+Tilda Rice,food
+Sharwoods Sauce,food
+Pataks Sauce,food
+Old El Paso Kit,food
+Schwartz Seasoning,food
+Colmans Mustard,food
+Hellmanns Mayo,food
+Hellmanns Mayonnaise,food
+Amoy Soy Sauce,food
+Blue Dragon Sauce,food
+Nandos Sauce,food
+Encona Sauce,food
+Tabasco,food
+Franks Hot Sauce,food
+Tropicana Juice,food
+Innocent Smoothie,food
+Ribena,food
+Vimto,food
+Robinsons Squash,food
+Lucozade,food
+Evian Water,food
+Highland Spring,food
+Buxton Water,food
+Volvic Water,food
+San Pellegrino,food
+Perrier,food
+Nescafe Coffee,food
+Kenco Coffee,food
+Douwe Egberts,food
+Lavazza Coffee,food
+Taylors Coffee,food
+PG Tips,food
+Yorkshire Tea,food
+Tetley Tea,food
+Twinings Tea,food
+Clipper Tea,food
+Pukka Tea,food
+Alpro Milk,food
+Alpro Yogurt,food
+Muller Yogurt,food
+Muller Corner,food
+Activia Yogurt,food
+Petit Filous,food
+Yeo Valley,food
+Rachel's Yogurt,food
+Skyr Yogurt,food
+Arla Milk,food
+Cravendale Milk,food
+Lactofree Milk,food
+Cathedral City Mature,food
+Babybel,food
+Dairylea,food
+Laughing Cow,food
+Primula,food
+Richmond Sausages,food
+Wall's Sausages,food
+Birds Eye Fish Fingers,food
+Birds Eye Peas,food
+Birds Eye Chicken,food
+McCain Chips,food
+McCain Wedges,food
+Aunt Bessies Roasties,food
+Aunt Bessies Yorkshires,food
+Linda McCartney Sausages,food
+Quorn Fillets,food
+Quorn Pieces,food
+Cauldron Tofu,food
+Alpro Soya,food
+Oatly,food
+Violife Cheese,food
