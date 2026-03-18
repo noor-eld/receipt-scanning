@@ -160,14 +160,20 @@ def normalize_ingredient(raw_text: str) -> str:
     """
     Takes messy receipt text and returns a clean ingredient name.
 
-    Uses a MULTI-STRATEGY approach to find the best match:
+    Uses THREE strategies, in order of specificity:
 
-    Strategy 1: Match the FULL cleaned text against the database.
-        Good for: "BANANA CAVENDISH" → "banana" (full phrase comparison)
+    Strategy 1: Full phrase match
+        "PEAS SNOW" → "snow peas" (sorts words and compares)
 
-    Strategy 2: Match EACH WORD individually against the database.
-        Good for: "ZUCHINNI GREEN" → "zucchini" (the important word is zuchinni,
-        not green — matching word by word catches this)
+    Strategy 2: Two-word combinations (n-grams)
+        "Cherry Plum Tomatoes" tries: "cherry plum", "plum tomatoes"
+        → "plum tomatoes" matches "cherry tomato" or just "tomato"
+
+    Strategy 3: Individual word match
+        "ZUCHINNI GREEN" → "zucchini" (catches misspelled single ingredients)
+
+    Multi-word database matches get a bonus because they're more specific.
+    "cherry tomato" (2 words) is more precise than "cherry" (1 word).
     """
 
     cleaned = _preprocess_text(raw_text)
@@ -178,45 +184,71 @@ def normalize_ingredient(raw_text: str) -> str:
     best_match = None
     best_score = 0.0
 
-    # Strategy 1: Match the full cleaned text
-    # Uses WRatio which tries multiple comparison methods and picks the best.
-    # Good for multi-word ingredients like "peanut butter" or "cherry tomato"
+    # Strategy 1: Full phrase match
     full_result = process.extractOne(
         query=cleaned,
         choices=INGREDIENT_DATABASE,
-        scorer=fuzz.WRatio,
+        scorer=fuzz.token_sort_ratio,
         score_cutoff=60.0,
     )
 
     if full_result:
         match, score, index = full_result
+        # Bonus for multi-word matches — they capture more context
+        if " " in match:
+            score = min(score * 1.1, 100.0)
         if score > best_score:
             best_match = match
             best_score = score
 
-    # Strategy 2: Match each word individually
-    # Split "ZUCHINNI GREEN" into ["zuchinni", "green"] and match each one.
-    # This catches cases where one word is the ingredient and the other is noise.
+    # Strategy 2: Two-word combinations (n-grams)
+    # "Cherry Plum Tomatoes" → ["cherry plum", "plum tomatoes"]
+    # This catches compound ingredients like "cherry tomato", "snow peas", etc.
     words = cleaned.split()
+    if len(words) >= 2:
+        for i in range(len(words) - 1):
+            bigram = f"{words[i]} {words[i + 1]}"
+
+            bigram_result = process.extractOne(
+                query=bigram,
+                choices=INGREDIENT_DATABASE,
+                scorer=fuzz.token_sort_ratio,
+                score_cutoff=65.0,
+            )
+
+            if bigram_result:
+                match, score, index = bigram_result
+                # Bonus for multi-word matches
+                if " " in match:
+                    score = min(score * 1.1, 100.0)
+                if score > best_score:
+                    best_match = match
+                    best_score = score
+
+    # Strategy 3: Individual word match (last resort)
+    # Only use this if we haven't found a strong match already.
+    # This prevents "cherry" (100%) from beating "cherry tomato" (85%).
     for word in words:
-        if len(word) < 3:  # Skip tiny words like "gv", "sc"
+        if len(word) < 3:
             continue
 
         word_result = process.extractOne(
             query=word,
             choices=INGREDIENT_DATABASE,
-            scorer=fuzz.ratio,  # Strict character comparison for single words
-            score_cutoff=70.0,  # Higher threshold for single words to avoid false matches
+            scorer=fuzz.ratio,
+            score_cutoff=75.0,
         )
 
         if word_result:
             match, score, index = word_result
-            # Boost single-word matches slightly less than full-phrase matches
-            # so "peanut butter" (full match) beats "peanut" (word match)
-            adjusted_score = score * 0.95
-            if adjusted_score > best_score:
+            # Penalize single-word matches against single-word database entries
+            # when we're processing multi-word receipt text.
+            # This prevents "cherry" from beating "cherry tomato".
+            if len(words) > 1 and " " not in match:
+                score = score * 0.85
+            if score > best_score:
                 best_match = match
-                best_score = adjusted_score
+                best_score = score
 
     if best_match:
         return best_match
