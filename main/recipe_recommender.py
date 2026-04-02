@@ -13,6 +13,7 @@ import os
 import re
 import ast
 import pandas as pd
+from rapidfuzz import fuzz
 
 # --- Path to the recipe CSV ---
 # os.path.dirname(__file__) gets the folder this script is in (main/)
@@ -44,7 +45,8 @@ PREP_WORDS = {
     "extra-virgin", "low-sodium", "whole", "large", "medium", "small",
     "fresh", "plus", "more", "for", "serving", "garnish", "to", "taste",
     "about", "approximately", "loosely", "firmly", "into", "cut", "removed", "or", "and", "of", "with", "such", "as",
-    "good-quality", "sturdy", "qt", "shallow", "ceramic", "glass",
+    "good-quality", "sturdy", "qt", "shallow", "ceramic", "glass", "cold", "reserved",
+    "another", "use",
 }
 
 
@@ -111,22 +113,158 @@ def _parse_ingredients_list(ingredients_str: str) -> list[str]:
 
     return cleaned
 
+def _match_ingredient(pantry_item: str, recipe_ingredient: str) -> bool:
+    """
+    Checks if a pantry item matches a recipe ingredient.
+
+    Uses TWO strategies:
+    1. Substring: "chicken" matches "chicken breast"
+    2. Fuzzy: "parmesan" matches "parmigiano" (75% threshold)
+
+    WHY BOTH?
+    Substring catches cases where pantry has "chicken" and the recipe
+    says "chicken breast" — fuzzy might score this low because "breast"
+    adds noise. Fuzzy catches misspellings and variations that substring misses.
+    """
+
+    pantry_lower = pantry_item.lower().strip()
+    recipe_lower = recipe_ingredient.lower().strip()
+
+    # Strategy 1: Direct substring match
+    if pantry_lower in recipe_lower or recipe_lower in pantry_lower:
+        return True
+
+    # Strategy 2: Fuzzy match (sorts words before comparing,
+    # so "red onion" matches "onion red")
+    score = fuzz.token_sort_ratio(pantry_lower, recipe_lower)
+    return score >= 75
+
+class RecipeRecommender:
+    """
+    Loads recipes from CSV and recommends based on available ingredients.
+
+    WHY A CLASS?
+    It loads 13k recipes into memory ONCE when the server starts.
+    A class holds this data so it doesn't reload the CSV on every request.
+    The server creates one instance, and every API call reuses the same data.
+    """
+
+    def __init__(self):
+        self.recipes = []
+        self._load_recipes()
+
+    def _load_recipes(self):
+        """Load and preprocess all recipes from CSV."""
+
+        if not os.path.exists(DATA_PATH):
+            print(f"WARNING: Recipe data not found at {DATA_PATH}")
+            return
+
+        print("Loading recipe database...")
+        df = pd.read_csv(DATA_PATH)
+
+        count = 0
+        for _, row in df.iterrows():
+            title = row.get("Title", "")
+            ingredients_raw = row.get("Ingredients", "[]")
+            instructions = row.get("Instructions", "")
+
+            if not title or not ingredients_raw:
+                continue
+
+            cleaned_ingredients = _parse_ingredients_list(str(ingredients_raw))
+
+            # Skip recipes with fewer than 2 ingredients (probably bad data)
+            if len(cleaned_ingredients) < 2:
+                continue
+
+            self.recipes.append({
+                "title": str(title),
+                "ingredients": cleaned_ingredients,
+                "ingredient_count": len(cleaned_ingredients),
+                "instructions": str(instructions),
+            })
+            count += 1
+
+        print(f"Loaded {count} recipes.")
+
+    def recommend(
+            self,
+            pantry_items: list[str],
+            top_n: int = 10,
+            min_match_percent: float = 0.3,
+    ) -> list[dict]:
+        """
+        Scores all recipes against the user's pantry.
+
+        For each recipe: score = (ingredients you HAVE) / (total ingredients)
+        Returns the top matches sorted by score.
+
+        Args:
+            pantry_items: e.g., ["chicken", "butter", "garlic", "salt"]
+            top_n: How many results to return
+            min_match_percent: Minimum score to include (0.3 = 30%)
+        """
+
+        if not pantry_items or not self.recipes:
+            return []
+
+        scored = []
+
+        for recipe in self.recipes:
+            matched = []
+            missing = []
+
+            for recipe_ing in recipe["ingredients"]:
+                found = False
+
+                for pantry_item in pantry_items:
+                    if _match_ingredient(pantry_item, recipe_ing):
+                        matched.append(recipe_ing)
+                        found = True
+                        break
+
+                if not found:
+                    missing.append(recipe_ing)
+
+            total = len(recipe["ingredients"])
+            match_score = len(matched) / total if total > 0 else 0
+
+            if match_score >= min_match_percent and recipe["ingredient_count"] >= 4:
+                scored.append({
+                    "title": recipe["title"],
+                    "match_score": round(match_score, 2),
+                    "matched_ingredients": matched,
+                    "missing_ingredients": missing,
+                    "total_ingredients": total,
+                    "instructions": recipe["instructions"],
+                })
+
+        # Sort by match score first, then by number of matched ingredients
+        # This prevents tiny 2-ingredient recipes from always ranking first.
+        # A 70% match on 10 ingredients (7 matches) is more useful
+        # than 100% on 2 ingredients (2 matches).
+        scored.sort(
+        key=lambda x: (x["match_score"], len(x["matched_ingredients"])),
+        reverse=True,
+        )
+
+        return scored[:top_n]
+
 
 # --- Quick test: run this file directly to verify it loads correctly ---
 # Usage: cd into main/ folder, then run: python recipe_recommender.py
 if __name__ == "__main__":
-    if not os.path.exists(DATA_PATH):
-        print(f"ERROR: CSV not found at {DATA_PATH}")
-    else:
-        print("Loading recipe database...")
-        df = pd.read_csv(DATA_PATH)
-        print(f"Total rows in CSV: {len(df)}")
+    recommender = RecipeRecommender()
 
-        # Test parsing on first 5 recipes
-        print("\n--- Sample parsed ingredients ---")
-        for i in range(5):
-            title = df.iloc[i]["Title"]
-            raw = df.iloc[i]["Ingredients"]
-            cleaned = _parse_ingredients_list(str(raw))
-            print(f"\n{title}:")
-            print(f"  Parsed: {cleaned}")
+    # Test with some sample pantry items
+    test_pantry = ["chicken", "butter", "garlic", "salt", "pepper", "rosemary"]
+    print(f"\nPantry: {test_pantry}")
+    print("--- Top 3 Recommendations ---")
+
+    results = recommender.recommend(test_pantry, top_n=3)
+    for r in results:
+        print(f"\n  {r['title']}")
+        print(f"  Match: {int(r['match_score'] * 100)}%")
+        print(f"  Have: {r['matched_ingredients']}")
+        print(f"  Need: {r['missing_ingredients']}")
