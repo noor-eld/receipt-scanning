@@ -275,6 +275,7 @@ class RecipeRecommender:
                     "title": r["title"],
                     "ingredient_count": r["ingredient_count"],
                     "ingredients": r["ingredients"],
+                    "instructions": r["instructions"],
                 }
                 for r in page_recipes
             ],
@@ -283,6 +284,14 @@ class RecipeRecommender:
             "per_page": per_page,
             "total_pages": (len(self.recipes) + per_page - 1) // per_page,
         }
+
+    def get_recipe_by_title(self, title: str) -> dict | None:
+        """Returns full recipe details for a single recipe."""
+
+        for recipe in self.recipes:
+            if recipe["title"].lower() == title.lower():
+                return recipe
+        return None
 
 
 # --- Quick test: run this file directly to verify it loads correctly ---

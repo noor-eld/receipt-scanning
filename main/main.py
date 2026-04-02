@@ -193,6 +193,20 @@ async def browse_recipes(page: int = 1, per_page: int = 20):
         **result,
     }
 
+@app.get("/api/recipes/detail")
+async def recipe_detail(title: str):
+    """Returns full details for a single recipe by title."""
+
+    recipe = recommender.get_recipe_by_title(title)
+
+    if not recipe:
+        return {"success": False, "message": "Recipe not found"}
+
+    return {
+        "success": True,
+        "recipe": recipe,
+    }
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
