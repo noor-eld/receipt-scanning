@@ -251,6 +251,39 @@ class RecipeRecommender:
 
         return scored[:top_n]
 
+    def get_all_recipes(
+            self,
+            page: int = 1,
+            per_page: int = 20,
+    ) -> dict:
+        """
+        Returns paginated recipes for browsing (no pantry matching).
+
+        WHY PAGINATION?
+        13k recipes is too many to send at once — it would freeze the app.
+        Pagination sends 20 at a time. The app loads more as the user scrolls.
+        """
+
+        start = (page - 1) * per_page
+        end = start + per_page
+
+        page_recipes = self.recipes[start:end]
+
+        return {
+            "recipes": [
+                {
+                    "title": r["title"],
+                    "ingredient_count": r["ingredient_count"],
+                    "ingredients": r["ingredients"],
+                }
+                for r in page_recipes
+            ],
+            "total": len(self.recipes),
+            "page": page,
+            "per_page": per_page,
+            "total_pages": (len(self.recipes) + per_page - 1) // per_page,
+        }
+
 
 # --- Quick test: run this file directly to verify it loads correctly ---
 # Usage: cd into main/ folder, then run: python recipe_recommender.py
@@ -268,3 +301,10 @@ if __name__ == "__main__":
         print(f"  Match: {int(r['match_score'] * 100)}%")
         print(f"  Have: {r['matched_ingredients']}")
         print(f"  Need: {r['missing_ingredients']}")
+
+    # Test browsing
+    print("\n--- Browse page 1 ---")
+    page = recommender.get_all_recipes(page=1, per_page=3)
+    print(f"Total recipes: {page['total']}")
+    for r in page["recipes"]:
+        print(f"  {r['title']} ({r['ingredient_count']} ingredients)")
