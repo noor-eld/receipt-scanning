@@ -18,6 +18,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from classifier import classify_item, should_skip_line
 from normalizer import normalize_ingredient
 
+from recipe_recommender import RecipeRecommender
+
 load_dotenv()
 
 GOOGLE_CLOUD_VISION_KEY = os.getenv("GOOGLE_CLOUD_VISION_KEY")
@@ -36,6 +38,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Load recipe database into memory once at startup
+recommender = RecipeRecommender()
 
 
 def extract_text_from_image(image_bytes: bytes) -> str:
@@ -156,6 +161,37 @@ async def process_receipt(image_file: UploadFile = File(...)):
         "raw_text": ocr_text,
     }
 
+@app.post("/api/recipes/recommend")
+async def recommend_recipes(pantry_items: list[str], top_n: int = 10):
+    """
+    Accepts the user's pantry ingredients and returns the best recipe matches.
+    Expects a JSON body: ["chicken", "butter", "garlic", "salt"]
+    """
+
+    if not pantry_items:
+        return {"success": False, "message": "No pantry items provided", "recipes": []}
+
+    results = recommender.recommend(pantry_items, top_n=top_n)
+
+    return {
+        "success": True,
+        "message": f"Found {len(results)} matching recipe(s)",
+        "recipes": results,
+    }
+
+
+@app.get("/api/recipes/browse")
+async def browse_recipes(page: int = 1, per_page: int = 20):
+    """
+    Returns paginated recipes for browsing without matching.
+    """
+
+    result = recommender.get_all_recipes(page=page, per_page=per_page)
+
+    return {
+        "success": True,
+        **result,
+    }
 
 if __name__ == "__main__":
     import uvicorn
