@@ -7,10 +7,8 @@
 #   2. Start the server: python main.py
 #   3. Test at http://localhost:8000/docs
 
-import base64
 import os
 
-import requests as http_requests
 from dotenv import load_dotenv
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -20,10 +18,14 @@ from normalizer import normalize_ingredient
 
 from recipe_recommender import RecipeRecommender
 
+import cv2
+import numpy as np
+import pytesseract
+
 load_dotenv()
 
-GOOGLE_CLOUD_VISION_KEY = os.getenv("GOOGLE_CLOUD_VISION_KEY")
-VISION_API_URL = f"https://vision.googleapis.com/v1/images:annotate?key={GOOGLE_CLOUD_VISION_KEY}"
+# Tesseract path (macOS Homebrew)
+pytesseract.pytesseract.tesseract_cmd = '/opt/homebrew/bin/tesseract'
 
 app = FastAPI(
     title="Recipe App - Receipt Scanner API",
@@ -44,36 +46,50 @@ recommender = RecipeRecommender()
 
 
 def extract_text_from_image(image_bytes: bytes) -> str:
-    """Sends an image to Google Cloud Vision API and returns all detected text."""
+    """
+    Processes a receipt image using OpenCV preprocessing and Tesseract OCR.
 
-    base64_image = base64.b64encode(image_bytes).decode("utf-8")
+    Steps:
+    1. Convert raw bytes to an OpenCV image
+    2. Convert to grayscale (removes colour noise)
+    3. Increase contrast (makes text stand out from background)
+    4. Apply Gaussian blur (reduces small noise/grain)
+    5. Apply Otsu thresholding (converts to pure black and white)
+    6. Run Tesseract OCR on the cleaned image
 
-    payload = {
-        "requests": [
-            {
-                "image": {"content": base64_image},
-                "features": [{"type": "TEXT_DETECTION"}],
-            }
-        ]
-    }
+    """
 
-    response = http_requests.post(VISION_API_URL, json=payload)
+    # Convert raw bytes into a numpy array, then into an OpenCV image
+    np_array = np.frombuffer(image_bytes, np.uint8)
+    image = cv2.imdecode(np_array, cv2.IMREAD_COLOR)
 
-    if response.status_code != 200:
-        print(f"Vision API error: {response.status_code} - {response.text}")
+    if image is None:
+        print("Failed to decode image")
         return ""
 
-    result = response.json()
+    # Step 1: Convert to grayscale
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-    try:
-        annotations = result["responses"][0].get("textAnnotations", [])
-        if annotations:
-            return annotations[0]["description"]
-        return ""
-    except (KeyError, IndexError) as e:
-        print(f"Error parsing Vision API response: {e}")
-        return ""
+    # Step 2: Increase contrast — makes text darker, background lighter
+    # alpha=1.5 boosts contrast, beta=0 keeps brightness neutral
+    contrast = cv2.convertScaleAbs(gray, alpha=1.5, beta=0)
 
+    # Step 3: Gaussian blur — smooths out small noise/grain
+    blur = cv2.GaussianBlur(contrast, (5, 5), 0)
+
+    # Step 4: Otsu thresholding — automatically finds the best cutoff
+    # to convert the image to pure black and white
+    _, thresh = cv2.threshold(
+        blur, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU
+    )
+
+    # Step 5: Run Tesseract OCR
+    # --oem 3: use the best available OCR engine (LSTM neural net)
+    # --psm 6: assume the image is a single block of text (good for receipts)
+    custom_config = r'--oem 3 --psm 6'
+    text = pytesseract.image_to_string(thresh, config=custom_config)
+
+    return text
 
 def parse_receipt_text(ocr_text: str) -> list[dict]:
     """

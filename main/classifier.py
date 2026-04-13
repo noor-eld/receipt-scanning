@@ -16,7 +16,7 @@ import pickle
 import os
 
 # --- Load the trained ML model ---
-MODEL_PATH = "food_classifier.pkl"
+MODEL_PATH = os.path.join(os.path.dirname(__file__), "food_classifier.pkl")
 
 if os.path.exists(MODEL_PATH):
     with open(MODEL_PATH, "rb") as f:
