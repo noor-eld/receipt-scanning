@@ -8,6 +8,8 @@
 #   3. Test at http://localhost:8000/docs
 
 import os
+import base64
+import requests
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, UploadFile, File, HTTPException
@@ -15,23 +17,18 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from classifier import classify_item, should_skip_line
 from normalizer import normalize_ingredient
-
 from recipe_recommender import RecipeRecommender
-
-import cv2
-import numpy as np
-import pytesseract
 
 load_dotenv()
 
-# Tesseract path (macOS Homebrew)
-pytesseract.pytesseract.tesseract_cmd = '/opt/homebrew/bin/tesseract'
+GOOGLE_CLOUD_VISION_KEY = os.getenv("GOOGLE_CLOUD_VISION_KEY")
 
 app = FastAPI(
     title="Recipe App - Receipt Scanner API",
     description="Processes receipt images and extracts food ingredients using ML",
-    version="0.4.0",
+    version="0.5.0",
 )
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -47,49 +44,60 @@ recommender = RecipeRecommender()
 
 def extract_text_from_image(image_bytes: bytes) -> str:
     """
-    Processes a receipt image using OpenCV preprocessing and Tesseract OCR.
+    Sends a receipt image to Google Cloud Vision API and returns
+    the extracted text.
 
-    Steps:
-    1. Convert raw bytes to an OpenCV image
-    2. Convert to grayscale (removes colour noise)
-    3. Increase contrast (makes text stand out from background)
-    4. Apply Gaussian blur (reduces small noise/grain)
-    5. Apply Otsu thresholding (converts to pure black and white)
-    6. Run Tesseract OCR on the cleaned image
-
+    How it works:
+    1. Convert image bytes to base64 (Cloud Vision requires this format)
+    2. Build a JSON request with the image + what we want (TEXT_DETECTION)
+    3. Send it to Google's API via HTTP POST
+    4. Pull out the raw text from the response
     """
 
-    # Convert raw bytes into a numpy array, then into an OpenCV image
-    np_array = np.frombuffer(image_bytes, np.uint8)
-    image = cv2.imdecode(np_array, cv2.IMREAD_COLOR)
+    # Step 1: Convert image bytes to base64 string
+    # Cloud Vision can't receive raw bytes — it needs the image
+    # encoded as a text string. Base64 does exactly that.
+    encoded_image = base64.b64encode(image_bytes).decode("utf-8")
 
-    if image is None:
-        print("Failed to decode image")
+    # Step 2: Build the request body
+    # TEXT_DETECTION tells Cloud Vision we want to read text from the image
+    request_body = {
+        "requests": [
+            {
+                "image": {
+                    "content": encoded_image
+                },
+                "features": [
+                    {
+                        "type": "TEXT_DETECTION"
+                    }
+                ]
+            }
+        ]
+    }
+
+    # Step 3: Send to Cloud Vision API
+    url = f"https://vision.googleapis.com/v1/images:annotate?key={GOOGLE_CLOUD_VISION_KEY}"
+
+    response = requests.post(url, json=request_body)
+
+    # Step 4: Check the response was successful
+    if response.status_code != 200:
+        print(f"Cloud Vision error: {response.status_code} — {response.text}")
         return ""
 
-    # Step 1: Convert to grayscale
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    # Step 5: Pull out the text
+    # The response is nested JSON — the full text lives here:
+    # response → responses[0] → fullTextAnnotation → text
+    data = response.json()
 
-    # Step 2: Increase contrast — makes text darker, background lighter
-    # alpha=1.5 boosts contrast, beta=0 keeps brightness neutral
-    contrast = cv2.convertScaleAbs(gray, alpha=1.5, beta=0)
-
-    # Step 3: Gaussian blur — smooths out small noise/grain
-    blur = cv2.GaussianBlur(contrast, (5, 5), 0)
-
-    # Step 4: Otsu thresholding — automatically finds the best cutoff
-    # to convert the image to pure black and white
-    _, thresh = cv2.threshold(
-        blur, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU
-    )
-
-    # Step 5: Run Tesseract OCR
-    # --oem 3: use the best available OCR engine (LSTM neural net)
-    # --psm 6: assume the image is a single block of text (good for receipts)
-    custom_config = r'--oem 3 --psm 6'
-    text = pytesseract.image_to_string(thresh, config=custom_config)
-
-    return text
+    try:
+        text = data["responses"][0]["fullTextAnnotation"]["text"]
+        return text
+    except (KeyError, IndexError):
+        # This means Cloud Vision found no text in the image
+        print("Cloud Vision returned no text")
+        return ""
 
 def parse_receipt_text(ocr_text: str) -> list[dict]:
     """
