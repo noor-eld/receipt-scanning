@@ -8,3 +8,18 @@
 /dataSources.local.xml
 # Editor-based HTTP Client requests
 /httpRequests/
+
+# Python
+.venv/
+__pycache__/
+*.pkl
+*.pyc
+
+# Mac
+.DS_Store
+
+# IDE
+.idea/
+
+# Data
+data/.DS_Store
