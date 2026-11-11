@@ -1,12 +1,13 @@
 # requirements.txt
 # These are all the Python libraries the backend needs.
+# Versions are pinned (==) so every install gets exactly the same libraries.
 
-fastapi          # The web framework — handles incoming requests from the phone
-uvicorn          # The server that runs FastAPI
-python-multipart # Lets FastAPI receive uploaded files (like receipt images)
-requests         # Makes HTTP calls to Google Cloud Vision API
-python-dotenv    # Reads the .env file
-Pillow           # Image processing library (resizing, converting formats)
-scikit-learn       # ML library — TF-IDF, Logistic Regression, cross-validation
-pandas             # Data handling — reads the training CSV
-rapidfuzz           # Fuzzy string matching for ingredient normalization
+fastapi==0.136.0            # The web framework — handles incoming requests from the phone
+uvicorn==0.44.0             # The server that runs FastAPI
+python-multipart==0.0.26    # Lets FastAPI receive uploaded files (like receipt images)
+requests==2.33.1            # Makes HTTP calls to Google Cloud Vision API
+python-dotenv==1.2.2        # Reads the .env file
+Pillow==12.2.0              # Image processing library (resizing, converting formats)
+scikit-learn==1.8.0         # ML library — TF-IDF, Logistic Regression, cross-validation
+pandas==3.0.2               # Data handling — reads the training CSV
+rapidfuzz==3.14.5           # Fuzzy string matching for ingredient normalization
