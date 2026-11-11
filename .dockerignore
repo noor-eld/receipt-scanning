@@ -1,0 +1,10 @@
+.venv/
+.idea/
+.git/
+__pycache__/
+*.pyc
+.DS_Store
+.env
+data/*.jpg
+data/*.png
+data/*.webp
